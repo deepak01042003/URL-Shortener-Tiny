@@ -223,7 +223,7 @@ app.get('/:shortCode', async (req, res) => {
 );
 
 
-  // try {
+  try {
   //     // Check Cache
   //     const cachedData = await redisClient.get(shortCode);
   //          if (cachedData){
