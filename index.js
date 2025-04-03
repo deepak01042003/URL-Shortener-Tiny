@@ -48,10 +48,10 @@ cron.schedule('0 0 * * *', async () => {
       console.error('Error during cleanup:', err);
   }
 });
-const redisClient = redis.createClient();
-redisClient.connect();
-redisClient.on('connect', () => console.log('Redis connected!'));
-redisClient.on('error', (err) => console.error('Redis error:', err));
+// const redisClient = redis.createClient();
+// redisClient.connect();
+// redisClient.on('connect', () => console.log('Redis connected!'));
+// redisClient.on('error', (err) => console.error('Redis error:', err));
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -223,16 +223,16 @@ app.get('/:shortCode', async (req, res) => {
 );
 
 
-  try {
-      // Check Cache
-      const cachedData = await redisClient.get(shortCode);
-           if (cachedData){
-            const id=Result.rows[0].id;
-            const parsedData=JSON.parse(cachedData);
-          await logClick(shortCode, userIp,id);
-          console.log("redis Used");
-          return res.redirect(parsedData.longUrl);
-      }
+  // try {
+  //     // Check Cache
+  //     const cachedData = await redisClient.get(shortCode);
+  //          if (cachedData){
+  //           const id=Result.rows[0].id;
+  //           const parsedData=JSON.parse(cachedData);
+  //         await logClick(shortCode, userIp,id);
+  //         console.log("redis Used");
+  //         return res.redirect(parsedData.longUrl);
+  //     }
 
       // Fetch from DB
       const result = await db.query(
@@ -248,13 +248,13 @@ app.get('/:shortCode', async (req, res) => {
       // Cache for future use
       const redisData = JSON.stringify({ longUrl, expirationTime });
 
-let expiration;
+// let expiration;
 
-if (expirationTime) {
-  expiration = 'EX', Math.floor((new Date(expirationTime) - new Date()) / 1000);
-}
+// if (expirationTime) {
+//   expiration = 'EX', Math.floor((new Date(expirationTime) - new Date()) / 1000);
+// }
 
- await redisClient.set(shortCode, redisData, expiration);
+//  await redisClient.set(shortCode, redisData, expiration);
      
 
       await logClick(shortCode, userIp,id);
