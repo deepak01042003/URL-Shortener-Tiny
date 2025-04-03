@@ -14,14 +14,18 @@ import ipgeolocation from 'ipgeolocation';
 puppeteer.use(StealthPlugin());
 
 
-const db= new pg.Client({
-    user:"postgres",
-    host:"localhost",
-    database:"url project",
-    password:"123456",
-    port:"5432",
-
+const db = new pg.Client({
+    user: "deepakgarg",
+    host: "dpg-cvn43t9r0fns738gu63g-a.oregon-postgres.render.com",
+    database: "deepji",
+    password: "JfvFE0opEjqTPzYHVe4CjzsuYqaLumWU",
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false, // Required for secure cloud DB connections
+        require: true // Ensures SSL is strictly required
+    }
 });
+
 cron.schedule('0 0 * * *', async () => {
   console.log('Running cleanup job for expired URLs...');
   try {
