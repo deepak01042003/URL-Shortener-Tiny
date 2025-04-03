@@ -13,7 +13,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import ipgeolocation from 'ipgeolocation';
 puppeteer.use(StealthPlugin());
 
-
+const port=process.env.PORT;
 const db = new pg.Client({
     user: "deepakgarg",
     host: "dpg-cvn43t9r0fns738gu63g-a.oregon-postgres.render.com",
@@ -268,6 +268,6 @@ if (expirationTime) {
 
 
 
-app.listen(3000,()=>{
+app.listen(port,()=>{
     console.log("welcome sir");
 })
