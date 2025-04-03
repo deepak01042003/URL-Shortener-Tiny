@@ -215,55 +215,38 @@ async function logClick(shortCode, ip,id) {
 
 
 app.get('/:shortCode', async (req, res) => {
-  const { shortCode } = req.params;
-  const userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  const Result = await db.query(
-    `SELECT id FROM urls WHERE short_code = $1`,
-    [shortCode]
-);
-
-
   try {
-  //     // Check Cache
-  //     const cachedData = await redisClient.get(shortCode);
-  //          if (cachedData){
-  //           const id=Result.rows[0].id;
-  //           const parsedData=JSON.parse(cachedData);
-  //         await logClick(shortCode, userIp,id);
-  //         console.log("redis Used");
-  //         return res.redirect(parsedData.longUrl);
-  //     }
+    const { shortCode } = req.params;
+    const userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-      // Fetch from DB
-      const result = await db.query(
-          `SELECT long_url FROM urls WHERE short_code = $1 AND (expiration_time IS NULL OR expiration_time > NOW())`,
-          [shortCode]
-      );
+    console.log("Received shortCode:", shortCode); // Debugging
 
-      if (result.rows.length === 0) return res.status(404).json({ error: 'URL not found or expired' });
+    const Result = await db.query(
+      `SELECT id, long_url FROM urls WHERE LOWER(short_code) = LOWER($1) 
+      AND (expiration_time IS NULL OR expiration_time > NOW())`,
+      [shortCode]
+    );
 
-      const longUrl = result.rows[0].long_url;
-      const expirationTime=result.rows[0].expiration_time;
+    console.log("Database Query Result:", Result.rows); // Debugging
 
-      // Cache for future use
-      const redisData = JSON.stringify({ longUrl, expirationTime });
+    if (Result.rows.length === 0) {
+      console.log("Short code not found or expired");
+      return res.status(404).json({ error: 'URL not found or expired' });
+    }
 
-// let expiration;
+    const { id, long_url: longUrl } = Result.rows[0];
 
-// if (expirationTime) {
-//   expiration = 'EX', Math.floor((new Date(expirationTime) - new Date()) / 1000);
-// }
+    console.log("Redirecting to:", longUrl); // Debugging
 
-//  await redisClient.set(shortCode, redisData, expiration);
-     
+    await logClick(shortCode, userIp, id);
 
-      await logClick(shortCode, userIp,id);
-      res.redirect(longUrl);
+    res.redirect(longUrl);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error("Error handling short URL:", err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
