@@ -238,7 +238,7 @@ app.get('/:shortCode', async (req, res) => {
 
     console.log("Redirecting to:", longUrl); // Debugging
 
-    await logClick(shortCode, userIp, id);
+    // await logClick(shortCode, userIp, id);
 
     res.redirect(longUrl);
   } catch (err) {
