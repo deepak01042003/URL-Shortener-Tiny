@@ -77,7 +77,8 @@ app.get('/', (req, res) => {
   
   async function hook(url) {
     // Step 1: Validate the URL format
-    if (!validator.isURL(url)) {
+    if (!validator.isURL(url, { require_protocol: true })) {
+ 
       return false; // Invalid URL format
     }
   
