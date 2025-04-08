@@ -76,12 +76,12 @@ app.get('/', (req, res) => {
   });
   
   async function hook(url) {
-    // Step 1: Validate the URL format
-    // if (!validator.isURL(url, { require_protocol: true, allow_underscores: true, validate_length: false })) {
+    Step 1: Validate the URL format
+    if (!validator.isURL(url, { require_protocol: true, allow_underscores: true, validate_length: false })) {
  
  
-    //   return false; // Invalid URL format
-    // }
+      return false; // Invalid URL format
+    }
   
     try {
       // Step 2: Try to fetch the URL
@@ -240,7 +240,7 @@ app.get('/:shortCode', async (req, res) => {
 
     console.log("Redirecting to:", longUrl); // Debugging
 
-    // await logClick(shortCode, userIp, id);
+    await logClick(shortCode, userIp, id);
 
     res.redirect(longUrl);
   } catch (err) {
